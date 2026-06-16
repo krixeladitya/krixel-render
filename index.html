@@ -171,6 +171,7 @@
     color:var(--muted);background:var(--bg);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px}
   .chip:hover{color:var(--txt);border-color:var(--accent)}
   .chip.go{color:#1a0e06;background:linear-gradient(90deg,var(--accent),var(--accent2));border:none}
+  .chip.del{color:var(--faint)} .chip.del:hover{color:var(--red);border-color:var(--red)}
 
   .empty{text-align:center;padding:60px 20px;color:var(--muted)}
   .empty .e-ic{font-size:42px;margin-bottom:14px}
@@ -410,13 +411,15 @@ function jobCard(j){
   const thumb=j.thumb?`style="background-image:url('${j.thumb}')"`:"";
   const workerTxt=j.worker?`<span class="worker">🖥️ ${j.worker}</span>`:"";
 
-  let actions="";
-  if(j.status==="done") actions=`<div class="jactions">
-      <a class="chip go" href="${j.mp4||'#'}" target="_blank">▶ Download MP4</a>
-      <a class="chip" href="${j.folder||'#'}" target="_blank">📁 Frames</a></div>`;
-  else if(j.status==="error") actions=`<div class="jactions">
-      <span class="chip" style="border-color:var(--red);color:var(--red)">⚠ ${j.error||'render failed'}</span>
-      <span class="chip">↻ Retry</span></div>`;
+  let chips=[];
+  if(j.status==="done"){
+    chips.push(`<a class="chip go" href="${j.mp4||'#'}" target="_blank">▶ Download MP4</a>`);
+    chips.push(`<a class="chip" href="${j.folder||'#'}" target="_blank">📁 Frames</a>`);
+  } else if(j.status==="error"){
+    chips.push(`<span class="chip" style="border-color:var(--red);color:var(--red)">⚠ ${j.error||'render failed'}</span>`);
+  }
+  chips.push(`<button class="chip del" onclick="deleteJob('${j.id}', this)">✕ Remove</button>`);
+  const actions=`<div class="jactions">${chips.join('')}</div>`;
 
   let metrics="";
   if(j.status==="rendering") metrics=`<div class="metrics">
@@ -476,6 +479,17 @@ function checkStall(jobs, workers){
       +`<div class="sub">Open the render notebook and click “Run all” to continue — it resumes from the last finished frame.</div></div>`
       +(CFG.NOTEBOOK_URL?`<a class="chip go start" href="${CFG.NOTEBOOK_URL}" target="_blank">▶ Start a worker</a>`:``);
   } else el.style.display="none";
+}
+
+async function deleteJob(id, btn){
+  if(!confirm("Remove this render from the queue?")) return;
+  if(btn){ btn.disabled=true; btn.textContent="…"; }
+  try{
+    if(CFG.MOCK){ MOCK_JOBS=MOCK_JOBS.filter(j=>String(j.id)!==String(id)); }
+    else{ await fetch(CFG.APPS_SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"delete",key:CFG.SUBMIT_KEY,id})}); }
+    toast("Removed from queue.");
+    refresh();
+  }catch(e){ toast("Could not remove: "+e.message,false); if(btn){ btn.disabled=false; btn.textContent="✕ Remove"; } }
 }
 
 async function refresh(){
