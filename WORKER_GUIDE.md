@@ -14,24 +14,22 @@ You don't need to know Blender or coding. ~5 min to set up once, then it's just
 
 ## One-time setup (5 minutes)
 
-You'll get **two values** from the founder. Keep them private.
-- `KR_GOOGLE_TOKEN` (a long block of text)
-- `KR_SHEET_KEY` (a short code)
+You'll get **one value** from the founder — your access token. Keep it private.
+- `KR_GOOGLE_TOKEN` (a long block of text). You add it **once** and never again.
 
 ### On Kaggle (recommended — gives 2 GPUs)
 1. Go to **kaggle.com**, sign in with **your own Google account**, and verify your
    phone if it asks (one time — unlocks the free GPU).
 2. **Create → New Notebook**.
-3. Right side: **Add-ons → Secrets** → add both values exactly:
-   - name `KR_GOOGLE_TOKEN`, value = the long text
-   - name `KR_SHEET_KEY`, value = the short code
+3. Right side: **Add-ons → Secrets** → add **one** secret:
+   - name `KR_GOOGLE_TOKEN`, value = the long text the founder sent
 4. Right side: **Settings → Accelerator → GPU T4 x2**.
 5. **File → Import Notebook** → upload `krixel_render.ipynb` (the founder will send it).
 
 ### On Colab (alternative)
 1. **colab.research.google.com**, sign in with **your own Google account**.
 2. Open `krixel_render.ipynb`.
-3. Left bar → 🔑 key icon → add the same two secrets, and toggle "notebook access" on.
+3. Left bar → 🔑 key icon → add the secret `KR_GOOGLE_TOKEN`, and toggle "notebook access" on.
 4. **Runtime → Change runtime type → T4 GPU**.
 5. **Runtime → Run all.** (The notebook auto-detects Colab — nothing to edit.)
 
