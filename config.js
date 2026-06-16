@@ -19,7 +19,7 @@ window.RENDER_CONFIG = {
 
   // Link to your worker notebook (Kaggle/Colab). Shown on the "start a worker"
   // button when the queue stalls. Leave "" to hide the button.
-  NOTEBOOK_URL: "",
+  NOTEBOOK_URL: "https://colab.research.google.com/github/krixeladitya/krixel-render/blob/main/krixel_render.ipynb",
 
   // MOCK = true shows fake jobs so you can see the design without any setup.
   // Set to false once APPS_SCRIPT_URL is filled in.
